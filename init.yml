@@ -1,0 +1,28 @@
+--- # Create common things
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: "Create target dir in productcatalogue"
+      file:
+        path: ./productcatalogue/target
+        state: directory
+    - name: "Create target dir in shopfront"
+      file:
+        path: ./shopfront/target
+        state: directory
+    - name: "Create target dir in stockmanager"
+      file:
+        path: ./stockmanager/target
+        state: directory
+    - name: "Create target dir in functional-tests"
+      file:
+        path: ./docker/functional-tests/target
+        state: directory
+    - name: "Create target dir in performance-tests"
+      file:
+        path: ./docker/performance-tests/target
+        state: directory
+
+

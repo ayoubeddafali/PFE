@@ -1,0 +1,19 @@
+--- # Create common things
+hosts: localhost
+connection: local
+gather_facts: no
+
+tasks:
+  - name: "Remove target content in productcatalogue"
+    shell: |
+      rm -rf productcatalogue/target
+  - name: "Create target content in shopfront"
+    shell: |
+      rm -rf shopfront/target
+  - name: "Create target content in stockmanager"
+    shell: |
+      rm -rf stockmanager/target
+  - name: "Create target content in functional-tests"
+    shell: |
+      rm -rf fonctional-tests/target
+

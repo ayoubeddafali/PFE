@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  shopfront:
+    image: ayoubensalem/spring:front-release
+    links:
+      - productcatalogue
+      - stockmanager
+    ports:
+      - "8010:8010"
+  productcatalogue:
+    image: ayoubensalem/spring:catalog-release
+    ports:
+      - "8020:8020"
+  stockmanager:
+    image: ayoubensalem/spring:stock-release
+    ports:
+      - "8030:8030"
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]

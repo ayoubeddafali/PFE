@@ -1,0 +1,40 @@
+version: "3"
+services:
+  catalog:
+    build:
+      context: ../../
+      dockerfile: productcatalogue/Dockerfile
+    image: ayoubensalem/spring:catalog
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ./settings.xml:/opt/apache-maven-${MAVEN_VERSION}/conf/settings.xml
+    command: mvn clean deploy
+    networks:
+      - labnet
+
+  front:
+    build:
+      context: ../../
+      dockerfile: shopfront/Dockerfile
+    image: ayoubensalem/spring:front
+    volumes:
+      - mvnrepo:/home/test/.m2
+    command: mvn clean deploy
+    networks:
+      - labnet
+
+  stock:
+    build:
+      context: ../../
+      dockerfile: stockmanager/Dockerfile
+    image: ayoubensalem/spring:stock
+    volumes:
+      - mvnrepo:/home/test/.m2
+    command: mvn clean deploy
+    networks:
+      - labnet
+
+volumes:
+  mvnrepo:
+networks:
+  labnet:

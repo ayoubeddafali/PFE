@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  shopfront:
+    build:
+      context: ../../
+      dockerfile: shopfront/Dockerfile.Release
+    image: ayoubensalem/springfront:latest
+    depends_on:
+      - db
+      - productcatalogue
+      - stockmanager
+    ports:
+      - "8010:8010"
+    networks:
+      - appnet2
+  productcatalogue:
+    build:
+      context: ../../
+      dockerfile: productcatalogue/Dockerfile.Release
+    image: ayoubensalem/springcatalog:latest
+    ports:
+      - "8020:8020"
+    networks:
+      - appnet2
+  stockmanager:
+    build:
+      context: ../../
+      dockerfile: stockmanager/Dockerfile.Release
+    image: ayoubensalem/springstock:latest
+    ports:
+      - "8030:8030"
+    networks:
+      - appnet2
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    image: ayoubensalem/springmysql:latest
+    env_file:
+      - env_db
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "33633:3306"
+    networks:
+      - appnet2
+
+networks:
+  appnet2:
+volumes:
+  mysqldata:

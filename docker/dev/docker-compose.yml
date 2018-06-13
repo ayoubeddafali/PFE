@@ -1,0 +1,72 @@
+version: "3"
+services:
+  catalog:
+    build:
+      context: ../../
+      dockerfile: productcatalogue/Dockerfile
+    image: ayoubensalem/spring:catalog
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../productcatalogue/target:/app/target
+    networks:
+      - labnet
+  front:
+    build:
+      context: ../../
+      dockerfile: shopfront/Dockerfile
+    image: ayoubensalem/spring:front
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../shopfront/target:/app/target
+    networks:
+      - labnet
+
+  stock:
+    build:
+      context: ../../
+      dockerfile: stockmanager/Dockerfile
+    image: ayoubensalem/spring:stock
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../stockmanager/target:/app/target
+    networks:
+      - labnet
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    image: ayoubensalem/agent
+    depends_on:
+      - db
+    environment:
+      PROBE_HOST: "db"
+      PROBE_PORT: "3306"
+    command: ["probe.yml"]
+    networks:
+      - labnet
+#      docker run -e
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    image: ayoubensalem/springmysql:latest
+    ports:
+      - "33633:3306"
+    volumes:
+#      - ./dumps:/opt/dumps
+      - mysqldata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "19641995"
+      MYSQL_DATABASE: "springdocker"
+      MYSQL_USER: "ayoubensalem"
+      MYSQL_PASSWORD: "19641995"
+    networks:
+      - labnet
+
+
+volumes:
+  mvnrepo:
+  mysqldata:
+networks:
+  labnet:

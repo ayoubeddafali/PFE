@@ -1,0 +1,8 @@
+FROM mysql:5.7
+
+RUN apt-get update \
+&& apt-get install -y curl
+RUN mkdir /opt/dumps
+VOLUME /opt/dumps
+
+COPY ./dumps/springdocker.sql /opt/dumps/springdocker.sql

@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ayoubensalem/springfunctional:latest
+    volumes:
+      - ./target:/app/target
+      - mvn-repo:/home/test/.m2
+    networks:
+      - labnet
+
+#  shopfront:
+#    image: ayoubensalem/spring:front-release
+#    links:
+#      - productcatalogue
+#      - stockmanager
+#    ports:
+#      - "8010:8010"
+#    networks:
+#      - appnet
+#  productcatalogue:
+#    image: ayoubensalem/spring:catalog-release
+#    ports:
+#      - "8020:8020"
+#    networks:
+#      - appnet
+#  stockmanager:
+#    image: ayoubensalem/spring:stock-release
+#    ports:
+#      - "8030:8030"
+#    networks:
+#      - appnet
+
+networks:
+  labnet:
+volumes:
+  mvn-repo:

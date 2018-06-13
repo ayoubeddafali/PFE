@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  test:
+    image: ayoubensalem/spring:performance
+    ports:
+      - "33733:80"
+    networks:
+      - perf
+  agent:
+    image: ayoubensalem/agent:latest
+    depends_on:
+      - db
+    environment:
+      PROBE_HOST: "db"
+      PROBE_PORT: "3306"
+    command: ["probe.yml"]
+    networks:
+      - perf
+
+  db:
+    image: ayoubensalem/mysql:5.7
+    ports:
+      - "33633:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "19641995"
+      MYSQL_DATABASE: "springdocker"
+      MYSQL_USER: "ayoubensalem"
+      MYSQL_PASSWORD: "19641995"
+    networks:
+      - perf
+
+networks:
+  perf:
+volumes:
+  mysqldata:

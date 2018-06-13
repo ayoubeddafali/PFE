@@ -1,0 +1,135 @@
+pipeline {
+  agent none
+  options {
+    skipDefaultCheckout true
+  }
+  stages {
+    stage("Checkout Code from Gitlab "){
+      agent {
+        label 'master'
+      }
+      steps {
+        checkout([
+               $class: 'GitSCM',
+               branches: [[name: '*/devops1_spring']],
+               doGenerateSubmoduleConfigurations: false,
+               extensions: [[$class: 'LocalBranch', localBranch: "**"]],
+               submoduleCfg: [],
+               userRemoteConfigs: [[credentialsId: '736051fa-c90e-4823-8b1b-cc861e19f951',
+               url:'git@gitlab.rabat.sqli.com:DEVOPS_TRAINING/DEVOPS_TRAINING.git']]])
+      }
+    }
+    stage("Build") {
+
+      agent {
+          label "master"
+      }
+      steps {
+          sh "docker build  -t ayoubensalem/spring:dev docker/dev"
+          sh "make build"
+      }
+    }
+
+    stage("Unit Tests") {
+
+      agent {
+          label "master"
+      }
+      steps {
+          sh "make test"
+      }
+    }
+
+    stage("Deploy Artifacts to Nexus") {
+
+      agent {
+          label "master"
+      }
+      steps {
+          sh "make deploy"
+      }
+    }
+
+    stage("Build Release Images") {
+
+      agent {
+          label "master"
+      }
+      steps {
+          sh "make release"
+      }
+    }
+
+
+   stage("Running Stack on DockerSwarm"){
+      agent {
+        label 'Master1'
+      }
+      steps {
+        sh "wget 'https://transfer.sh/welA2/stack.yml'"
+        sh "docker stack deploy -c stack.yml MyApp"
+      }
+   }
+
+    stage("Running Functional Tests"){
+      agent {
+          label "master"
+      }
+      steps {
+          sh "make functional_test"
+      }
+    }
+
+    stage("Running Performance Tests"){
+      agent {
+          label "master"
+      }
+      steps {
+          sh "make performance_test"
+      }
+      post {
+
+        failure {
+          sh "make functional_down"
+          emailext(
+            subject: "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Failed!",
+            body: """<p> "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Failed!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "ayoub@example.com"
+          )
+        }
+        success {
+          sh "make functional_down"
+          emailext(
+            subject: "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Passed!",
+            body: """<p> "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Passed!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "ayoub@example.com"
+          )
+        }
+      }
+    }
+
+    stage("Provisioning AWS Infrastructure - Terraform"){
+      agent {
+          label "master"
+      }
+      steps {
+          echo "Provisionning AWS infrastructure with Terraform"
+      }
+    }
+
+ }
+  post {
+        always {
+          emailext(
+            subject: "Jenkins ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+            body: """<p> "Hi ! Check you  ${env.JOB_NAME} [${env.BUILD_NUMBER}]!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "ayoub@example.com"
+          )
+        }
+  }
+
+
+}

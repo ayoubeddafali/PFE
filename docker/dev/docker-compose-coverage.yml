@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  catalog:
+    image: ayoubensalem/spring:catalog
+    volumes:
+      - mvnrepo:/home/test/.m2
+    command: mvn sonar:sonar
+    networks:
+      - cvgnet
+
+  front:
+    image: ayoubensalem/spring:front
+    volumes:
+      - mvnrepo:/home/test/.m2
+    command: mvn sonar:sonar
+    networks:
+      - cvgnet
+
+  stock:
+    image: ayoubensalem/spring:stock
+    volumes:
+      - mvnrepo:/home/test/.m2
+    command: mvn sonar:sonar
+    networks:
+      - cvgnet
+
+volumes:
+  mvnrepo:
+networks:
+  cvgnet:

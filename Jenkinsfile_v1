@@ -1,0 +1,298 @@
+pipeline {
+  agent {
+      label 'master'
+  }
+  options {
+    skipDefaultCheckout true
+  }
+  stages {
+
+    stage("Checkout Code from Gitlab"){
+      steps {
+          checkout([$class: 'GitSCM', branches: [[name: '*/develop']],
+                    doGenerateSubmoduleConfigurations: false, extensions: [],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[credentialsId: 'fcf5a605-ee12-45fd-9766-19dad95b0e43',
+                                         url: 'git@gitlab.rabat.sqli.com:PFE/DEVOPS-CD.git']]])
+
+      }
+    }
+
+    stage("Init"){
+        steps{
+            sh "make clean"
+            sh "ansible-playbook init.yml"
+        }
+    }
+
+    stage("Build") {
+        parallel {
+            stage('Build Catalog App') {
+                steps {
+                    sh "docker build -t ayoubensalem/spring:dev ./docker/dev"
+                    sh "docker-compose -f ./docker/dev/docker-compose.yml build catalog"
+                    sh "docker-compose -f ./docker/dev/docker-compose.yml up catalog"
+                }
+
+            }
+            stage('Build Shopfront App') {
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose.yml build front
+                        docker-compose -f docker/dev/docker-compose.yml up front'''
+                }
+
+            }
+            stage('Build Stockmanager App') {
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose.yml build stock
+                        docker-compose -f docker/dev/docker-compose.yml up stock'''
+                }
+
+            }
+        }
+
+    }
+
+    stage("Unit Tests") {
+        parallel {
+            stage('Unit Tests Catalog App') {
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-test.yml build catalog
+                        docker-compose -f docker/dev/docker-compose-test.yml up catalog'''
+                }
+
+
+            }
+            stage('Unit Tests Shopfront App') {
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-test.yml build front
+                        docker-compose -f docker/dev/docker-compose-test.yml up front'''
+                    junit 'shopfront/target/surefire-reports/**/*.xml'
+                }
+
+
+            }
+            stage('Unit Tests Stockmanager App') {
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-test.yml build stock
+                        docker-compose -f docker/dev/docker-compose-test.yml up stock'''
+                    junit 'stockmanager/target/surefire-reports/**/*.xml'
+                }
+
+
+            }
+        }
+
+    }
+
+    stage("Coverage Tests"){
+        parallel {
+            stage('Coverage Tests Catalog App') {
+                steps {
+                    sh '''docker run ayoubensalem/spring:catalog mvn sonar:sonar'''
+                }
+
+            }
+            stage('Coverage Tests Shopfront App') {
+                steps {
+                    sh '''docker run ayoubensalem/spring:front mvn sonar:sonar'''
+                }
+
+            }
+            stage('Coverage Tests Stockmanager App') {
+                steps {
+                    sh '''docker run ayoubensalem/spring:stock mvn sonar:sonar'''
+                }
+
+            }
+        }
+    }
+
+    stage("Upload Artifacts to Nexus") {
+        parallel {
+            stage('Deploy Catalog App Artifacts') {
+
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-deploy.yml build catalog
+                        docker-compose -f docker/dev/docker-compose-deploy.yml up catalog'''
+                }
+
+
+            }
+            stage('Deploy Shopfront App Artifacts') {
+
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-deploy.yml build front
+                        docker-compose -f docker/dev/docker-compose-deploy.yml up front'''
+                }
+
+
+            }
+            stage('Deploy Stockmanager App Artifacts') {
+
+                steps {
+                    sh '''docker-compose -f docker/dev/docker-compose-deploy.yml build stock
+                        docker-compose -f docker/dev/docker-compose-deploy.yml up stock'''
+                }
+
+
+            }
+        }
+
+    }
+
+    stage("Build Release Images") {
+        parallel {
+            stage('Build Catalog App Release Image') {
+
+                steps {
+                    sh "docker-compose -f docker/release/docker-compose.yml build productcatalogue"
+//                    sh "docker tag ayoubensalem/spring:catalog-release ayoubensalem/spring:catalog-release-${BUILD_NUMBER}"
+                }
+
+            }
+            stage('Build Shopfront App Release Image') {
+
+                steps {
+                    sh "docker-compose -f docker/release/docker-compose.yml build shopfront"
+//                    sh "docker tag ayoubensalem/spring:front-release ayoubensalem/spring:front-release-${BUILD_NUMBER}"
+                }
+
+            }
+            stage('Build Stockmanager App Release Image') {
+
+                steps {
+                    sh "docker-compose -f docker/release/docker-compose.yml build stockmanager"
+//                    sh "docker tag ayoubensalem/spring:stock-release ayoubensalem/spring:stock-release-${BUILD_NUMBER}"
+                }
+
+            }
+        }
+
+    }
+
+    stage("Upload Release Images to Registry") {
+          parallel {
+              stage('Publish Catalog App Release Image') {
+
+                  steps {
+                      echo "Deploy to Nexus Docker registry"
+                      sh "docker login -u ${docker_registry_id} -p ${docker_registry_password} http://nexus.dev:18444"
+                      sh "docker tag ayoubensalem/spring:catalog-release nexus.dev:18444/spring:catalog-release"
+                      sh "docker tag ayoubensalem/spring:catalog-release nexus.dev:18444/spring:catalog-release-${BUILD_NUMBER}"
+                      sh "docker push nexus.dev:18444/spring:catalog-release >/dev/null 2>&1 || true"
+                      sh "docker push nexus.dev:18444/spring:catalog-release-${BUILD_NUMBER} >/dev/null 2>&1 || true "
+                  }
+
+
+              }
+              stage('Publish Shopfront App Release Image') {
+
+                  steps {
+                      echo "Deploy to Nexus Docker registry"
+                      sh "docker tag ayoubensalem/spring:front-release nexus.dev:18444/spring:front-release"
+                      sh "docker tag ayoubensalem/spring:front-release nexus.dev:18444/spring:front-release-${BUILD_NUMBER}"
+                      sh "docker push nexus.dev:18444/spring:front-release >/dev/null 2>&1 || true"
+                      sh "docker push nexus.dev:18444/spring:front-release-${BUILD_NUMBER} >/dev/null 2>&1 || true"
+                  }
+
+              }
+              stage('Publish Stockmanager App Release Image') {
+
+                  steps {
+                      echo "Deploy to Nexus Docker registry"
+                      sh "docker tag ayoubensalem/spring:front-release nexus.dev:18444/spring:stock-release"
+                      sh "docker tag ayoubensalem/spring:front-release nexus.dev:18444/spring:stock-release-${BUILD_NUMBER}"
+                      sh "docker push nexus.dev:18444/spring:stock-release >/dev/null 2>&1 || true"
+                      sh "docker push nexus.dev:18444/spring:stock-release-${BUILD_NUMBER} >/dev/null 2>&1 || true"
+                  }
+
+              }
+          }
+    }
+
+    stage("Deploying Swarm Stack "){
+      agent {
+          label 'Master1'
+      }
+      steps {
+          sh "wget 'https://transfer.sh/welA2/stack.yml'"
+          sh "docker stack deploy -c stack.yml MyApp"
+      }
+    }
+
+    stage("Functional Tests"){
+      steps {
+          sh '''docker-compose -f docker/functional-tests/docker-compose.yml build
+                docker-compose -f docker/functional-tests/docker-compose.yml up'''
+          junit "docker/functional-tests/target/surefire-reports/**/*.xml"
+      }
+        post {
+            always {
+                sh "make clean"
+            }
+        }
+    }
+
+    stage("Building Performance Image"){
+
+      steps {
+          sh '''docker build -t ayoubensalem/spring:performance docker/performance-tests
+                docker tag ayoubensalem/spring:performance nexus.dev:18444/spring-performance
+                docker push nexus.dev:18444/spring-performance '''
+      }
+      post {
+        always {
+          sh "make clean"
+        }
+      }
+    }
+
+    stage("Running Performance Tests On Slave1"){
+      agent {
+          label 'slave1'
+      }
+      steps {
+          sh "docker rm -f \$(docker ps -aq) >/dev/null 2>&1 || true"
+          sh "docker pull ayoubensalem/spring-performance:latest"
+          sh "docker run -d -p 33733:80 --rm ayoubensalem/spring-performance:latest"
+//          sh "docker pull nexus.dev:18444/spring-performance:latest "
+//          sh "docker run -d -p 33733:80 --rm nexus.dev:18444/spring-performance:latest"
+      }
+       post {
+           always {
+               emailext(
+                       subject: "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Finished!",
+                       body: """<p> "Performance Tests on ${env.JOB_NAME} [${env.BUILD_NUMBER}] Finished!":</p>
+                <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${
+                           env.BUILD_NUMBER
+                       }]</a>&QUOT;</p>""",
+                       to: "ayoub@example.com"
+               )
+           }
+           failure {
+                sh "docker rm -f \$(docker ps -aq) >/dev/null 2>&1 || true"
+                sh '''docker network prune --force
+                docker image prune --filter dangling=true -f
+                docker container prune -f'''
+            }
+       }
+    }
+
+ }
+    post {
+        always {
+            sh "make clean"
+            emailext(
+                    subject: "Jenkins ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                    body: """<p> "Hi ! Check you  ${env.JOB_NAME} [${env.BUILD_NUMBER}]!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+                    to: "ayoub@example.com"
+            )
+        }
+
+    }
+
+
+
+}

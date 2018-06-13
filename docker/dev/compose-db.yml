@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    image: ayoubensalem/agent
+    depends_on:
+      - db
+    environment:
+      PROBE_HOST: "db"
+      PROBE_PORT: "3306"
+    command: ["probe.yml"]
+    networks:
+      - testnet
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "33633:3306"
+#    volumes:
+#      - mysqldata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "19641995"
+      MYSQL_DATABASE: "springdocker"
+      MYSQL_USER: "ayoubensalem"
+      MYSQL_PASSWORD: "19641995"
+    networks:
+      - testnet
+
+networks:
+  testnet:
+    driver: bridge
+volumes:
+  mysqldata:
+

@@ -1,0 +1,35 @@
+--- # Playbook for setting up swarm cluster
+  - name: Init Kubernetes Master
+    hosts: local
+    gather_facts: False
+    remote_user: jenkins
+    become: yes
+    become_method: sudo
+    tasks:
+      - name: Kubernetes Init
+        shell: |
+          kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address {{ apiserver }} | grep discovery
+        register: joincommand
+
+      - name: Show Worker Access Command
+        debug: var=joincommand.stdout
+
+  - name: Join Kubernetes Cluster
+    hosts: slaves
+    remote_user: ansible
+    gather_facts: False
+    become: yes
+    become_method: sudo
+    vars:
+      join_token: "{{ hostvars[groups['local'][0]]['result']['stdout'] }}"
+    tasks:
+      - name: Join Kubernetes Cluster as a Minion
+        command: {{ join_token }}
+        ignore_errors: yes
+        register: worker
+
+      - name: Show Results
+        debug: var=worker.stdout
+
+      - name: Show Errors
+        debug: var=worker.stderr

@@ -1,0 +1,49 @@
+---
+version: "3.3"
+
+services:
+  master:
+    hostname: 'master'
+    image: actency/docker-mysql-replication:5.7
+    environment:
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_USER=testuser
+    - MYSQL_PASSWORD=password
+    - MYSQL_DATABASE=testdb
+    - REPLICATION_USER=repl_user
+    - REPLICATION_PASSWORD=repl_pass
+    volumes:
+    - mysql_master:/var/lib/mysql
+    ports:
+    - "3306"
+    networks:
+    - mysqlnet
+    deploy:
+      placement:
+        constraints:
+        - node.role == manager
+  replica:
+    image: actency/docker-mysql-replication:5.7
+    environment:
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_USER=testuser
+    - MYSQL_PASSWORD=password
+    - MYSQL_DATABASE=testdb
+    - REPLICATION_USER=repl_user
+    - REPLICATION_PASSWORD=repl_pass
+    volumes:
+    - mysql_replica:/var/lib/mysql
+    ports:
+    - "3306"
+    networks:
+    - mysqlnet
+    deploy:
+      placement:
+        constraints:
+        - node.role == worker
+networks:
+  mysqlnet:
+
+volumes:
+  mysql_master:
+  mysql_replica:

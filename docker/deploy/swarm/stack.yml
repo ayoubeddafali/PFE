@@ -1,0 +1,78 @@
+version: "3"
+
+services:
+  db:
+    image: ayoubensalem/springmysql:latest
+    container_name: db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "19641995"
+      MYSQL_DATABASE: "springdocker"
+      MYSQL_USER: "ayoubensalem"
+      MYSQL_PASSWORD: "19641995"
+    networks:
+      - stacknet
+    healthcheck:
+      test: curl -sS localhost:3306 || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  shopfront:
+    image: ayoubensalem/springfront:latest
+    ports:
+      - "8010:8010"
+    networks:
+      - stacknet
+    healthcheck:
+      test:  curl -sS db:3306 || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  productcatalogue:
+    image: ayoubensalem/springcatalog:latest
+    ports:
+      - "8020:8020"
+    networks:
+      - stacknet
+    healthcheck:
+      test: curl -sS db:3306 || exit 1 
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  stockmanager:
+    image: ayoubensalem/springstock:latest
+    ports:
+      - "8030:8030"
+    networks:
+      - stacknet
+    healthcheck:
+      test:  curl -sS db:3306 || exit 1 
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - stacknet
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  stacknet:
+volumes:
+  mysqldata:

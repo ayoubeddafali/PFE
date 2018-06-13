@@ -1,0 +1,44 @@
+version: "3"
+services:
+  catalog:
+    build:
+      context: ../../
+      dockerfile: productcatalogue/Dockerfile
+    image: ayoubensalem/spring:catalog
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../productcatalogue/target:/app/target
+    command: mvn surefire-report:report
+    networks:
+      - labnet
+
+  front:
+    build:
+      context: ../../
+      dockerfile: shopfront/Dockerfile
+    image: ayoubensalem/spring:front
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../shopfront/target:/app/target
+    command: mvn surefire-report:report
+    networks:
+      - labnet
+
+  stock:
+    build:
+      context: ../../
+      dockerfile: stockmanager/Dockerfile
+    image: ayoubensalem/spring:stock
+    volumes:
+      - mvnrepo:/home/test/.m2
+      - ../../stockmanager/target:/app/target
+    command: mvn surefire-report:report
+    networks:
+      - labnet
+
+volumes:
+  mvnrepo:
+  mysqldata:
+
+networks:
+  labnet:
