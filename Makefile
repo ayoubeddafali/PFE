@@ -5,7 +5,6 @@ restore = \033[0m
 
 
 init:
-	docker network create labnet
 	ansible-playbook init.yml
 
 builddev:

@@ -14,6 +14,7 @@ pipeline {
 
         stage("Init") {
             steps {
+                sh "docker network create labnet"
                 sh "make clean"
                 sh "ansible-playbook init.yml"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/stacks/stack.yml"
