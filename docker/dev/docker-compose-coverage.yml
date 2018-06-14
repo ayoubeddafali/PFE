@@ -7,7 +7,7 @@ services:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
     networks:
-      - cvgnet1
+      - labnet
 
   front:
     image: ayoubensalem/spring:front
@@ -15,7 +15,7 @@ services:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
     networks:
-      - cvgnet2
+      - labnet
 
   stock:
     image: ayoubensalem/spring:stock
@@ -23,11 +23,8 @@ services:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
     networks:
-      - cvgnet3
+      - labnet
 
 volumes:
   mvnrepo:
-networks:
-  cvgnet1:
-  cvgnet2:
-  cvgnet3:
+
