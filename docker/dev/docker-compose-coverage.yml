@@ -27,4 +27,5 @@ services:
 
 volumes:
   mvnrepo:
-
+networks:
+  labnet:
