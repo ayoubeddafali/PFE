@@ -5,8 +5,8 @@ restore = \033[0m
 
 
 init:
-	ansible-playbook init.yml
 	docker network create labnet
+	ansible-playbook init.yml
 
 builddev:
 	@echo "$(clr) Building Dev Image $(restore)"
