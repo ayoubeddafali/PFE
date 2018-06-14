@@ -125,12 +125,12 @@ under the License.
 
 
     <server>
-      <id>devops1-releases</id>
+      <id>nexus_releases</id>
       <username>admin</username>
       <password>admin123</password>
     </server>
     <server>
-      <id>devops1-snapshots</id>
+      <id>nexus_snapshots</id>
       <username>admin</username>
       <password>admin123</password>
     </server>
@@ -264,7 +264,7 @@ under the License.
       </activation>
       <properties>
         <sonar.host.url>
-          http://192.168.56.5:9000
+          http://sonar:9000
         </sonar.host.url>
       </properties>
     </profile>
