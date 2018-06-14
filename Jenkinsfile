@@ -73,7 +73,7 @@ pipeline {
                 stage('Unit Tests Shopfront App') {
                     steps {
                         sh 'docker-compose -f docker/dev/docker-compose-test.yml run --rm front'
-                        junit 'shopfront/target/surefire-reports/**/*.xml'
+                        // junit 'shopfront/target/surefire-reports/**/*.xml'
                     }
 
 
@@ -81,7 +81,7 @@ pipeline {
                 stage('Unit Tests Stockmanager App') {
                     steps {
                         sh 'docker-compose -f docker/dev/docker-compose-test.yml run --rm stock'
-                        junit 'stockmanager/target/surefire-reports/**/*.xml'
+                        // junit 'stockmanager/target/surefire-reports/**/*.xml'
                     }
 
 
