@@ -19,12 +19,12 @@
 
     <distributionManagement>
         <repository>
-            <id>devops1-releases</id>
-            <url>http://192.168.56.50:8081/repository/devops1-releases/</url>
+            <id>nexus_releases</id>
+            <url>http://nexus:8081/repository/nexus_releases/</url>
         </repository>
         <snapshotRepository>
-            <id>devops1-snapshots</id>
-            <url>http://192.168.56.50:8081/repository/devops1-snapshots/</url>
+            <id>nexus_snapshots</id>
+            <url>http://nexus:8081/repository/nexus_snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
