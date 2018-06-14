@@ -1,4 +1,4 @@
-FROM ayoubensalem/spring:dev
+FROM ayoubensalem/spring
 
 MAINTAINER ayoubensalem
 
