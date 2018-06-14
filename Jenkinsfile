@@ -15,14 +15,14 @@ pipeline {
         stage("Init") {
             steps {
                 sh "make clean"
-                sh "ansible-playbook init.yml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/stacks/stack.yml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/deploy/kubernetes/stockmanager-service.yaml ${NEXUS_URL}/repository/kubernetes/stockmanager-service.yaml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/deploy/kubernetes/productcatalogue-service.yaml ${NEXUS_URL}/repository/kubernetes/productcatalogue-service.yaml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/deploy/kubernetes/shopfront-service.yaml ${NEXUS_URL}/repository/kubernetes/kubernetes-dashboard.yaml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/playbooks/inventory ${NEXUS_URL}/repository/playbooks/inventory"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/playbooks/swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
-                sh "curl -v --user '${docker_registry_id}:${docker_registry_password}' --upload-file ./docker/playbooks/swarm_stack_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
+                sh "ansible-playbook in²it.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/stacks/stack.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/stockmanager-service.yaml ${NEXUS_URL}/repository/kubernetes/stockmanager-service.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/productcatalogue-service.yaml ${NEXUS_URL}/repository/kubernetes/productcatalogue-service.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/shopfront-service.yaml ${NEXUS_URL}/repository/kubernetes/kubernetes-dashboard.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/inventory ${NEXUS_URL}/repository/playbooks/inventory"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
             }
         }
 
