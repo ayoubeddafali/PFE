@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY shopfront .
 
-RUN chown -R 1001:125 /app
+RUN chown -R 1000:1000 /app
 
 USER test
 

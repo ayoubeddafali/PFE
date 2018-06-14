@@ -8,21 +8,26 @@
       file:
         path: ./productcatalogue/target
         state: directory
+        mode: 0755 
     - name: "Create target dir in shopfront"
       file:
         path: ./shopfront/target
         state: directory
+        mode: 0755 
     - name: "Create target dir in stockmanager"
       file:
         path: ./stockmanager/target
         state: directory
+        mode: 0755 
     - name: "Create target dir in functional-tests"
       file:
         path: ./docker/functional-tests/target
         state: directory
+        mode: 0755 
     - name: "Create target dir in performance-tests"
       file:
         path: ./docker/performance-tests/target
         state: directory
+        mode: 0755
 
 
