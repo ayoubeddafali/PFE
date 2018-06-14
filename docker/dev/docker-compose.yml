@@ -68,3 +68,5 @@ services:
 volumes:
   mvnrepo:
   mysqldata:
+networks:
+  labnet:
