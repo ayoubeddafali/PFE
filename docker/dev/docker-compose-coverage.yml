@@ -6,26 +6,26 @@ services:
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
-    networks:
-      - cvgnet
+    # networks:
+    #   - cvgnet
 
   front:
     image: ayoubensalem/spring:front
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
-    networks:
-      - cvgnet
+    # networks:
+    #   - cvgnet
 
   stock:
     image: ayoubensalem/spring:stock
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
-    networks:
-      - cvgnet
+    # networks:
+    #   - cvgnet
 
 volumes:
   mvnrepo:
-networks:
-  cvgnet:
+# networks:
+#   cvgnet:
