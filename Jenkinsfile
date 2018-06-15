@@ -241,10 +241,10 @@ pipeline {
                 // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
                 sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
                 sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
-                sh '''sudo docker network prune --force
-                    sudo docker image prune --filter dangling=true -f
-                    sudo  docker container prune -f'''
-                sh "sudo docker stack ls"
+                // sh '''sudo docker network prune --force
+                //     sudo docker image prune --filter dangling=true -f
+                //     sudo  docker container prune -f'''
+                // sh "sudo docker stack ls"
             }
         }
 
