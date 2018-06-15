@@ -19,6 +19,11 @@ RUN mkdir ${TEST_HOME}/.m2
 
 RUN chown -R ${user}:${group} ${TEST_HOME}/.m2
 
+RUN usermod -aG sudo test 
+
+RUN echo "test ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+
 WORKDIR /opt
 
 RUN wget http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
