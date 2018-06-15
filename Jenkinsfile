@@ -146,31 +146,39 @@ pipeline {
 
         stage("Build Release Images") {
             parallel {
-                stage('Build Catalog App Release Image') {
+                stage('Build Catalog Release Image') {
 
                     steps {
-                        sh "docker-compose -f docker/release/docker-compose.yml build --no-cache  productcatalogue "
+                        echo "Building Catalog Release Image"
+                        sh "docker pull ayoubensalem/springcatalog:latest"
+                        // sh "docker-compose -f docker/release/docker-compose.yml build --no-cache  productcatalogue "
                     }
 
                 }
-                stage('Build Shopfront App Release Image') {
+                stage('Build Shopfront Release Image') {
 
                     steps {
-                        sh "docker-compose -f docker/release/docker-compose.yml build --no-cache shopfront"
+                        echo "Build Shopfront Release Image"
+                        sh "docker pull ayoubensalem/springfront:latest"
+                        // sh "docker-compose -f docker/release/docker-compose.yml build --no-cache shopfront"
                     }
 
                 }
-                stage('Build Stockmanager App Release Image') {
+                stage('Build Stockmanager  Release Image') {
 
                     steps {
-                        sh "docker-compose -f docker/release/docker-compose.yml build --no-cache stockmanager"
+                        echo "Build Stockmanager Release Image"     
+                        sh "docker pull docker push ayoubensalem/springstock:latest"                   
+                        // sh "docker-compose -f docker/release/docker-compose.yml build --no-cache stockmanager"
                     }
 
                 }
                 stage('Build Database Image') {
 
                     steps {
-                        sh "docker-compose -f docker/release/docker-compose.yml build  db"
+                        sh "docker pull docker push ayoubensalem/springmysql:latest"
+                        // sh "docker-compose -f docker/release/docker-compose.yml build  db"
+
                     }
 
                 }
@@ -184,8 +192,8 @@ pipeline {
 
                     steps {
                         echo "Deploy to Nexus Docker registry"
-                        sh "docker login -u ${docker_registry_id} -p ${docker_registry_password}"
-                        sh "docker push ayoubensalem/springcatalog:latest"
+                        // sh "docker login -u ${docker_registry_id} -p ${docker_registry_password}"
+                        // sh "docker push ayoubensalem/springcatalog:latest"
 
                     }
 
@@ -195,7 +203,7 @@ pipeline {
 
                     steps {
                         echo "Deploy to Nexus Docker registry"
-                        sh "docker push ayoubensalem/springfront:latest"
+                        // sh "docker push ayoubensalem/springfront:latest"
                 }
 
                 }
@@ -203,7 +211,7 @@ pipeline {
 
                     steps {
                         echo "Deploy to Nexus Docker registry"
-                        sh "docker push ayoubensalem/springstock:latest"
+                        // sh "docker push ayoubensalem/springstock:latest"
                     }
 
                 }
@@ -211,33 +219,33 @@ pipeline {
 
                     steps {
                         echo "Deploy to Nexus Docker registry"
-                        sh "docker push ayoubensalem/springmysql:latest"
+                        // sh "docker push ayoubensalem/springmysql:latest"
                     }
 
                 }
             }
         }
 
-        // stage("Provisioning Swarm stack") {
-        //     agent {
-        //         label 'DOMaster'
-        //     }
-        //     steps {
-        //         echo "Provision swarm stack"
-        //         sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
-        //         sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
-        //         sh "wget -O inventory ${NEXUS_URL}/repository/playbooks/inventory"
-        //         // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
-        //         // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
-        //         // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
-        //         sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
-        //         sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
-        //         sh '''sudo docker network prune --force
-        //             sudo docker image prune --filter dangling=true -f
-        //             sudo  docker container prune -f'''
-        //         sh "sudo docker stack rm MyApp"
-        //     }
-        // }
+        stage("Provisioning Swarm stack") {
+            agent {
+                label 'DOMaster'
+            }
+            steps {
+                echo "Provision swarm stack"
+                sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
+                sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
+                sh "wget -O inventory ${NEXUS_URL}/repository/playbooks/inventory"
+                // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
+                // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
+                // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
+                // sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
+                // sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
+                // sh '''sudo docker network prune --force
+                //     sudo docker image prune --filter dangling=true -f
+                //     sudo  docker container prune -f'''
+                // sh "sudo docker stack rm MyApp"
+            }
+        }
 
 //         stage("Deploying Swarm Stack ") {
 //             agent {
