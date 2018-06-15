@@ -7,8 +7,13 @@ services:
     image: ayoubensalem/spring:catalog
     user: test
     volumes:
-      - mvnrepo:/home/test/.m2
-      - ../../productcatalogue/target:/app/target
+      - type: volume
+        source: /home/test/.m2
+        target: /data
+      - type: volume
+        source: ../../productcatalogue/target
+        target: /app/target
+        mode: 0777
     networks:
       - labnet
   front:
@@ -18,8 +23,13 @@ services:
     image: ayoubensalem/spring:front
     user: test
     volumes:
-      - mvnrepo:/home/test/.m2
-      - ../../shopfront/target:/app/target
+      - type: volume
+        source: /home/test/.m2
+        target: /data
+      - type: volume
+        source: ../../shopfront/target
+        target: /app/target
+        mode: 0777        
     networks:
       - labnet
 
@@ -30,8 +40,13 @@ services:
     image: ayoubensalem/spring:stock
     user: test
     volumes:
-      - mvnrepo:/home/test/.m2
-      - ../../stockmanager/target:/app/target
+      - type: volume
+        source: /home/test/.m2
+        target: /data
+      - type: volume
+        source: ../../stockmanager/target
+        target: /app/target
+        mode: 0777        
     networks:
       - labnet
   agent:
