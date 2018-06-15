@@ -168,7 +168,7 @@ pipeline {
 
                     steps {
                         echo "Build Stockmanager Release Image"     
-                        sh "docker pull docker push ayoubensalem/springstock:latest"                   
+                        sh "docker pull  ayoubensalem/springstock:latest"                   
                         // sh "docker-compose -f docker/release/docker-compose.yml build --no-cache stockmanager"
                     }
 
@@ -176,7 +176,7 @@ pipeline {
                 stage('Build Database Image') {
 
                     steps {
-                        sh "docker pull docker push ayoubensalem/springmysql:latest"
+                        sh "docker pull ayoubensalem/springmysql:latest"
                         // sh "docker-compose -f docker/release/docker-compose.yml build  db"
 
                     }
