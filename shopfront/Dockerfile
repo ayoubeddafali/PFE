@@ -12,4 +12,4 @@ RUN chown -R 1000:1000 /app
 
 USER test
 
-CMD ["mvn", "clean", "install"]
+CMD ["mvn", "clean", "install","-Dmaven.clean.failOnError=false"]
