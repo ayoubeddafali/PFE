@@ -17,13 +17,14 @@ pipeline {
                 // sh "docker network create labnet 2> /dev/null"
                 sh "make clean"
                 // sh "ansible-playbook init.yml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/stacks/stack.yml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/stockmanager-service.yaml ${NEXUS_URL}/repository/kubernetes/stockmanager-service.yaml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/productcatalogue-service.yaml ${NEXUS_URL}/repository/kubernetes/productcatalogue-service.yaml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/shopfront-service.yaml ${NEXUS_URL}/repository/kubernetes/kubernetes-dashboard.yaml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/inventory ${NEXUS_URL}/repository/playbooks/inventory"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/yamls/stack.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/stockmanager-service.yaml ${NEXUS_URL}/repository/yamls/stockmanager-service.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/productcatalogue-service.yaml ${NEXUS_URL}/repository/yamls/productcatalogue-service.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/shopfront-service.yaml ${NEXUS_URL}/repository/yamls/kubernetes-dashboard.yaml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/inventory ${NEXUS_URL}/repository/yamls/inventory"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack.yml ${NEXUS_URL}/repository/yamls/swarm_stack.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack_clean.yml ${NEXUS_URL}/repository/yamls/swarm_playbook_clean.yml"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/kubernetes/kube.tar.gz ${NEXUS_URL}/repository/yamls/kube.tar.gz"
             }
         }
 
@@ -232,9 +233,9 @@ pipeline {
             }
             steps {
                 echo "Provision swarm stack"
-                sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/playbooks/swarm_stack.yml"
-                sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/playbooks/swarm_playbook_clean.yml"
-                sh "wget -O inventory ${NEXUS_URL}/repository/playbooks/inventory"
+                sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/yamls/swarm_stack.yml"
+                sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/yamls/swarm_playbook_clean.yml"
+                sh "wget -O inventory ${NEXUS_URL}/repository/yamls/inventory"
                 // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
                 // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
                 // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
@@ -243,22 +244,22 @@ pipeline {
                 // sh '''sudo docker network prune --force
                 //     sudo docker image prune --filter dangling=true -f
                 //     sudo  docker container prune -f'''
-                // sh "sudo docker stack rm MyApp"
+                sh "sudo docker stack ls"
             }
         }
 
-//         stage("Deploying Swarm Stack ") {
-//             agent {
-//                 label 'DOMaster'
-//             }
-//             steps {
-// //          sh "wget -O stack.yml '${NEXUS_URL}/repository/stacks/stack.yml'"
-//                 // sh "wget -O stack.yml 'https://transfer.sh/tu084/stack.yml'"
-//                 // sh "sudo docker stack deploy -c stack.yml MyApp"
-//                 sh "sleep 90"
-// //          sh "docker exec -t db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
-//             }
-//         }
+        stage("Deploying Swarm Stack ") {
+            agent {
+                label 'DOMaster'
+            }
+            steps {
+                sh "wget -O stack.yml '${NEXUS_URL}/repository/yamls/stack.yml'"
+                // sh "wget -O stack.yml 'https://transfer.sh/tu084/stack.yml'"
+                // sh "sudo docker stack deploy -c stack.yml MyApp"
+                sh "sleep 90"
+//          sh "docker exec -t db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
+            }
+        }
 
         stage("Functional Tests") {
             steps {
@@ -284,7 +285,7 @@ pipeline {
             }
             post {
                 always {
-                    echo "Hello"
+                    echo "Post Build Performance"
 //          sh "make clean"
                 }
             }
@@ -317,52 +318,52 @@ pipeline {
             }
         }
 
-        // stage("Init DB in Kuberenetes"){
-        //     agent {
-        //         label "KubeMaster"
-        //     }
-        //     steps {
-        //         sh "kubectl delete deployment --all"
-        //         sh "kubectl delete svc --all"
-        //         sh "wget -O kube.tar.gz https://transfer.sh/SdOam/kube.tar.gz"
-        //         sh "rm -rf /tmp/kubernetes"
-        //         sh "tar xzvf kube.tar.gz -C /tmp"
-        //         sh "kubectl apply -f /tmp/kubernetes/mysql-service.yaml"
-        //     }
-        // }
+        stage("Init DB in Kuberenetes"){
+            agent {
+                label "KubeMaster"
+            }
+            steps {
+                sh "kubectl delete deployment --all"
+                sh "kubectl delete svc --all"
+                sh "wget -O kube.tar.gz '${NEXUS_URL}/repository/yamls/kube.tar.gz'"
+                sh "rm -rf /tmp/kubernetes"
+                sh "tar xzvf kube.tar.gz -C /tmp"
+                sh "kubectl apply -f /tmp/kubernetes/mysql-service.yaml"
+            }
+        }
 
 
-        // stage("Deploy to Kubernetes") {
-        //     parallel {
-        //         stage('Deploy Catalog App') {
-        //             agent {
-        //                 label 'KubeMaster'
-        //             }
-        //             steps {
-        //                 sh "kubectl apply -f /tmp/kubernetes/productcatalogue-service.yaml"
-        //             }
+        stage("Deploy to Kubernetes") {
+            parallel {
+                stage('Deploy Catalog App') {
+                    agent {
+                        label 'KubeMaster'
+                    }
+                    steps {
+                        sh "kubectl apply -f /tmp/kubernetes/productcatalogue-service.yaml"
+                    }
 
-        //         }
-        //         stage('Deploy Shopfront App') {
-        //             agent {
-        //                 label 'KubeMaster'
-        //             }
-        //             steps {
-        //                 sh "kubectl apply -f /tmp/kubernetes/shopfront-service.yaml"
-        //             }
+                }
+                stage('Deploy Shopfront App') {
+                    agent {
+                        label 'KubeMaster'
+                    }
+                    steps {
+                        sh "kubectl apply -f /tmp/kubernetes/shopfront-service.yaml"
+                    }
 
-        //         }
-        //         stage('Deploy Stockmanager App') {
-        //             agent {
-        //                 label 'KubeMaster'
-        //             }
-        //             steps {
-        //                 sh "kubectl apply -f /tmp/kubernetes/stockmanager-service.yaml"
-        //             }
+                }
+                stage('Deploy Stockmanager App') {
+                    agent {
+                        label 'KubeMaster'
+                    }
+                    steps {
+                        sh "kubectl apply -f /tmp/kubernetes/stockmanager-service.yaml"
+                    }
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
     }
     post {
         always {
