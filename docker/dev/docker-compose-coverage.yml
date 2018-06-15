@@ -3,28 +3,28 @@ version: "3"
 services:
   catalog:
     image: ayoubensalem/spring:catalog
-    user: test
+    user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar:sonar
+    command: mvn sonar
     networks:
       - labnet
 
   front:
     image: ayoubensalem/spring:front
-    user: test
+    user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar:sonar
+    command: mvn sonar
     networks:
       - labnet
 
   stock:
     image: ayoubensalem/spring:stock
-    user: test
+    user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar:sonar
+    command: mvn sonar
     networks:
       - labnet
 
