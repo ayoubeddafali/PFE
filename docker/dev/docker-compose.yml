@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3"
 services:
   catalog:
     build:
@@ -7,13 +7,8 @@ services:
     image: ayoubensalem/spring:catalog
     user: test
     volumes:
-      - type: volume
-        source: /home/test/.m2
-        target: /data
-      - type: volume
-        source: ../../productcatalogue/target
-        target: /app/target
-        mode: 0777
+      - mvnrepo:/home/test/.m2
+      - ../../productcatalogue/target:/app/target
     networks:
       - labnet
   front:
@@ -23,13 +18,8 @@ services:
     image: ayoubensalem/spring:front
     user: test
     volumes:
-      - type: volume
-        source: /home/test/.m2
-        target: /data
-      - type: volume
-        source: ../../shopfront/target
-        target: /app/target
-        mode: 0777        
+      - mvnrepo:/home/test/.m2
+      - ../../shopfront/target:/app/target
     networks:
       - labnet
 
@@ -40,13 +30,8 @@ services:
     image: ayoubensalem/spring:stock
     user: test
     volumes:
-      - type: volume
-        source: /home/test/.m2
-        target: /data
-      - type: volume
-        source: ../../stockmanager/target
-        target: /app/target
-        mode: 0777        
+      - mvnrepo:/home/test/.m2
+      - ../../stockmanager/target:/app/target
     networks:
       - labnet
   agent:
