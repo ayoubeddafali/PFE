@@ -14,4 +14,4 @@ USER test
 
 CMD ["mvn", "clean", "install"]
 
-ENTRYPOINT [ "fix.sh" ]
+ENTRYPOINT [ "/app/fix.sh" ]
