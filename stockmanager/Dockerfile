@@ -9,7 +9,7 @@ WORKDIR /app
 COPY stockmanager  .
 
 RUN chown -R 1000:1000 /app
-
-USER root
+RUN chmod -R 777 /app 
+USER test 
 
 CMD ["mvn", "clean", "install"]
