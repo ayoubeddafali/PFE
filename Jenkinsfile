@@ -239,11 +239,11 @@ pipeline {
                 // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
                 // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
                 // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
-                // sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
-                // sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
-                // sh '''sudo docker network prune --force
-                //     sudo docker image prune --filter dangling=true -f
-                //     sudo  docker container prune -f'''
+                sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
+                sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
+                sh '''sudo docker network prune --force
+                    sudo docker image prune --filter dangling=true -f
+                    sudo  docker container prune -f'''
                 sh "sudo docker stack ls"
             }
         }
@@ -255,7 +255,7 @@ pipeline {
             steps {
                 sh "wget -O stack.yml '${NEXUS_URL}/repository/yamls/stack.yml'"
                 // sh "wget -O stack.yml 'https://transfer.sh/tu084/stack.yml'"
-                // sh "sudo docker stack deploy -c stack.yml MyApp"
+                sh "sudo docker stack deploy -c stack.yml MyApp"
                 sh "sleep 90"
 //          sh "docker exec -t db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
             }
