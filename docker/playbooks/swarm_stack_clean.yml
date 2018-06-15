@@ -1,9 +1,14 @@
 --- # Playbook for setting up swarm cluster
 
   - name: Restart docker
-    service:
-      name: docker
-      state: restarted
+    hosts: local
+    gather_facts: False
+    remote_user: jenkins
+    tasks:
+      - name: Restart docker
+        service:
+          name: docker
+          state: restarted
 
   - name: Init Swarm Master
     hosts: local
@@ -16,9 +21,15 @@
         failed_when: result.rc == 100
 
   - name: Restart docker
-    service:
-      name: docker
-      state: restarted
+    hosts: slaves
+    gather_facts: False
+    remote_user: ansible
+    tasks:
+      - name: Restart docker
+        service:
+          name: docker
+          state: restarted
+
 
   - name: Join Swarm Cluster
     hosts: slaves
