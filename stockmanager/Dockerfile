@@ -13,4 +13,4 @@ RUN chmod -R 777 /app
 
 USER test 
 
-CMD ["mvn", "clean", "install","-Dmaven.clean.failOnError=false"]
+CMD ["mvn", "clean", "install"]
