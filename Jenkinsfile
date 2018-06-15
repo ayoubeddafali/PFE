@@ -24,7 +24,7 @@ pipeline {
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/inventory ${NEXUS_URL}/repository/yamls/inventory"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack.yml ${NEXUS_URL}/repository/yamls/swarm_stack.yml"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/playbooks/swarm_stack_clean.yml ${NEXUS_URL}/repository/yamls/swarm_playbook_clean.yml"
-                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/kubernetes/kube.tar.gz ${NEXUS_URL}/repository/yamls/kube.tar.gz"
+                sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/kube.tar.gz ${NEXUS_URL}/repository/yamls/kube.tar.gz"
             }
         }
 
