@@ -5,6 +5,7 @@ services:
       context: ../../
       dockerfile: productcatalogue/Dockerfile
     image: ayoubensalem/spring:catalog
+    user: root
     volumes:
       - mvnrepo:/home/test/.m2
       - ./settings.xml:/opt/apache-maven-${MAVEN_VERSION}/conf/settings.xml
@@ -17,6 +18,7 @@ services:
       context: ../../
       dockerfile: shopfront/Dockerfile
     image: ayoubensalem/spring:front
+    user: root    
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn clean deploy
@@ -28,6 +30,7 @@ services:
       context: ../../
       dockerfile: stockmanager/Dockerfile
     image: ayoubensalem/spring:stock
+    user: root    
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn clean deploy
