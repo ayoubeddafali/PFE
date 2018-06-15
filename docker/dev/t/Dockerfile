@@ -8,8 +8,8 @@ ENV MVN_VERSION=${MAVEN_VERSION}
 
 ARG user=test
 ARG group=test
-ARG uid=1001
-ARG gid=125
+ARG uid=1000
+ARG gid=1000
 
 ENV TEST_HOME /home/test
 RUN groupadd -g ${gid} ${group} \
