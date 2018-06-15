@@ -9,6 +9,8 @@
         service:
           name: docker
           state: restarted
+        become: yes
+        become_method: sudo 
 
   - name: Init Swarm Master
     hosts: local
@@ -16,7 +18,7 @@
     remote_user: jenkins
     tasks:
       - name: Leave Swarm Cluster
-        command: docker swarm leave --force
+        command: sudo docker swarm leave --force
         register: result
         failed_when: result.rc == 100
 
@@ -29,6 +31,8 @@
         service:
           name: docker
           state: restarted
+        become: yes
+        become_method: sudo 
 
 
   - name: Join Swarm Cluster
@@ -37,6 +41,6 @@
     gather_facts: False
     tasks:
       - name: Leave Swarm Cluster
-        command: docker swarm leave --force
+        command: sudo docker swarm leave --force
         register: result
         failed_when: result.rc == 100
