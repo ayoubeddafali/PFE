@@ -5,7 +5,7 @@ services:
       context: ../../
       dockerfile: productcatalogue/Dockerfile
     image: ayoubensalem/spring:catalog
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
       - ../../productcatalogue/target:/app/target
@@ -18,7 +18,7 @@ services:
       context: ../../
       dockerfile: shopfront/Dockerfile
     image: ayoubensalem/spring:front
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
       - ../../shopfront/target:/app/target
@@ -31,7 +31,7 @@ services:
       context: ../../
       dockerfile: stockmanager/Dockerfile
     image: ayoubensalem/spring:stock
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
       - ../../stockmanager/target:/app/target

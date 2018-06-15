@@ -3,7 +3,7 @@ version: "3"
 services:
   catalog:
     image: ayoubensalem/spring:catalog
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
@@ -12,7 +12,7 @@ services:
 
   front:
     image: ayoubensalem/spring:front
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
@@ -21,7 +21,7 @@ services:
 
   stock:
     image: ayoubensalem/spring:stock
-    user: root
+    user: test
     volumes:
       - mvnrepo:/home/test/.m2
     command: mvn sonar:sonar
