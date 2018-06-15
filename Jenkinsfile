@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // sh "docker network create labnet 2> /dev/null"
                 sh "make clean"
-                // sh "ansible-playbook init.yml"
+                sh "ansible-playbook init.yml"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/stacks/stack.yml"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/stockmanager-service.yaml ${NEXUS_URL}/repository/kubernetes/stockmanager-service.yaml"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/kubernetes/productcatalogue-service.yaml ${NEXUS_URL}/repository/kubernetes/productcatalogue-service.yaml"
