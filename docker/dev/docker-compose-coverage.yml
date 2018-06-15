@@ -6,7 +6,7 @@ services:
     user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar
+    command: mvn compile sonar:sonar
     networks:
       - labnet
 
@@ -15,7 +15,7 @@ services:
     user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar
+    command: mvn compile sonar:sonar
     networks:
       - labnet
 
@@ -24,7 +24,7 @@ services:
     user: root
     volumes:
       - mvnrepo:/home/test/.m2
-    command: mvn sonar
+    command: mvn compile sonar:sonar
     networks:
       - labnet
 
