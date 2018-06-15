@@ -40,21 +40,21 @@ pipeline {
             parallel {
                 stage('Build Catalog App') {
                     steps {
-                        sh "docker-compose -f ./docker/dev/docker-compose.yml build catalog"
+                        sh "docker-compose -f ./docker/dev/docker-compose.yml build  --no-cache catalog"
                         sh "docker-compose -f ./docker/dev/docker-compose.yml run --rm catalog"
                     }
 
                 }
                 stage('Build Shopfront App') {
                     steps {
-                        sh '''docker-compose -f docker/dev/docker-compose.yml build front
+                        sh '''docker-compose -f docker/dev/docker-compose.yml build --no-cache  front
                         docker-compose -f docker/dev/docker-compose.yml run --rm front'''
                     }
 
                 }
                 stage('Build Stockmanager App') {
                     steps {
-                        sh "docker-compose -f ./docker/dev/docker-compose.yml build stock"
+                        sh "docker-compose -f ./docker/dev/docker-compose.yml build --no-cache  stock"
                         sh "docker-compose -f docker/dev/docker-compose.yml run --rm stock"
                     }
                 }

@@ -10,6 +10,6 @@ COPY shopfront .
 
 RUN chown -R 1000:1000 /app
 
-USER root
+USER test
 
 CMD ["mvn", "clean", "install"]
