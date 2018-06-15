@@ -7,7 +7,7 @@ services:
     image: ayoubensalem/spring:catalog
     volumes:
       - mvnrepo:/home/test/.m2
-      - ../../productcatalogue/target:/app/target
+      - ../../productcatalogue/target:/app/target:rw
     networks:
       - labnet
   front:
@@ -17,7 +17,7 @@ services:
     image: ayoubensalem/spring:front
     volumes:
       - mvnrepo:/home/test/.m2
-      - ../../shopfront/target:/app/target
+      - ../../shopfront/target:/app/target:rw
     networks:
       - labnet
 
@@ -28,7 +28,7 @@ services:
     image: ayoubensalem/spring:stock
     volumes:
       - mvnrepo:/home/test/.m2
-      - ../../stockmanager/target:/app/target
+      - ../../stockmanager/target:/app/target:rw
     networks:
       - labnet
   agent:
