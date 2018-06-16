@@ -31,9 +31,9 @@ pipeline {
         stage("Init Test Database") {
             steps {
                 echo "Init Test Database"
-                // sh "docker-compose -f ./docker/dev/docker-compose.yml build agent"
-                // sh "docker-compose -f ./docker/dev/docker-compose.yml build db"
-                // sh "docker-compose -f ./docker/dev/docker-compose.yml  run --rm agent"
+                sh "docker-compose -f ./docker/dev/docker-compose.yml build agent"
+                sh "docker-compose -f ./docker/dev/docker-compose.yml build db"
+                sh "docker-compose -f ./docker/dev/docker-compose.yml  run --rm agent"
 //            sh "docker-compose -f ./docker/dev/docker-compose.yml exec -T db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
             }
         }
