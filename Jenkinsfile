@@ -30,9 +30,10 @@ pipeline {
 
         stage("Init Test Database") {
             steps {
-                sh "docker-compose -f ./docker/dev/docker-compose.yml build agent"
-                sh "docker-compose -f ./docker/dev/docker-compose.yml build db"
-                sh "docker-compose -f ./docker/dev/docker-compose.yml  run --rm agent"
+                echo "Init Test Database"
+                // sh "docker-compose -f ./docker/dev/docker-compose.yml build agent"
+                // sh "docker-compose -f ./docker/dev/docker-compose.yml build db"
+                // sh "docker-compose -f ./docker/dev/docker-compose.yml  run --rm agent"
 //            sh "docker-compose -f ./docker/dev/docker-compose.yml exec -T db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
             }
         }
@@ -96,19 +97,24 @@ pipeline {
             parallel {
                 stage('Coverage Tests Catalog App') {
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run catalog'
+                        echo "Coverage"
+                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run catalog'
                     }
 
                 }
                 stage('Coverage Tests Shopfront App') {
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run front'
+                        echo "Coverage"
+                        
+                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run front'
                     }
 
                 }
                 stage('Coverage Tests Stockmanager App') {
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run stock'
+                        echo "Coverage"
+                        
+                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run stock'
                     }
 
                 }
@@ -120,7 +126,9 @@ pipeline {
                 stage('Deploy Catalog App Artifacts') {
 
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run catalog'
+                        echo "Deploy"
+                        
+                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run catalog'
                     }
 
 
@@ -128,7 +136,9 @@ pipeline {
                 stage('Deploy Shopfront App Artifacts') {
 
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run front'
+                        echo "Deploy"
+                        
+                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run front'
                     }
 
 
@@ -136,7 +146,9 @@ pipeline {
                 stage('Deploy Stockmanager App Artifacts') {
 
                     steps {
-                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run stock'
+                        echo "Deploy"
+                        
+                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run stock'
                     }
 
 
@@ -233,14 +245,14 @@ pipeline {
             }
             steps {
                 echo "Provision swarm stack"
-                sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/yamls/swarm_stack.yml"
-                sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/yamls/swarm_playbook_clean.yml"
-                sh "wget -O inventory ${NEXUS_URL}/repository/yamls/inventory"
-                // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
-                // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
-                // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
-                sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
-                sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
+                // sh "wget  -O swarm_stack.yml ${NEXUS_URL}/repository/yamls/swarm_stack.yml"
+                // sh "wget -O swarm_playbook_clean.yml ${NEXUS_URL}/repository/yamls/swarm_playbook_clean.yml"
+                // sh "wget -O inventory ${NEXUS_URL}/repository/yamls/inventory"
+                // // sh "wget -O inventory https://transfer.sh/cILeF/inventory"
+                // // sh "wget -O swarm_playbook.yml https://transfer.sh/9Jk1A/swarm_stack.yml"
+                // // sh "wget -O swarm_playbook_clean.yml https://transfer.sh/alnWy/swarm_stack_clean.yml"
+                // sh "ansible-playbook -i inventory swarm_playbook_clean.yml"
+                // sh "ansible-playbook -i inventory swarm_stack.yml --extra-vars 'inventory_hostname=${INVENTORY_HOSTNAME}'"
                 // sh '''sudo docker network prune --force
                 //     sudo docker image prune --filter dangling=true -f
                 //     sudo  docker container prune -f'''
@@ -253,9 +265,9 @@ pipeline {
                 label 'DOMaster'
             }
             steps {
-                sh "wget -O stack.yml '${NEXUS_URL}/repository/yamls/stack.yml'"
-                // sh "wget -O stack.yml 'https://transfer.sh/tu084/stack.yml'"
-                sh "sudo docker stack deploy -c stack.yml MyApp"
+                // sh "wget -O stack.yml '${NEXUS_URL}/repository/yamls/stack.yml'"
+                // // sh "wget -O stack.yml 'https://transfer.sh/tu084/stack.yml'"
+                // sh "sudo docker stack deploy -c stack.yml MyApp"
                 sh "sleep 90"
 //          sh "docker exec -t db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
             }
@@ -296,7 +308,7 @@ pipeline {
                 // sh "docker rm -f \$(docker ps -aq) >/dev/null 2>&1 || true"
                  echo "Running Performance Image"
                 // sh "docker pull ayoubensalem/spring-performance:latest"
-                sh "docker run -d -P --rm ayoubensalem/spring-performance:latest"
+                // sh "docker run -d -P --rm ayoubensalem/spring-performance:latest"
             }
             post {
                 always {
