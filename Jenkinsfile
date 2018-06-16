@@ -296,7 +296,7 @@ pipeline {
                 // sh "docker rm -f \$(docker ps -aq) >/dev/null 2>&1 || true"
                  echo "Running Performance Image"
                 // sh "docker pull ayoubensalem/spring-performance:latest"
-                sh "docker run -d -p 33733:80 --rm ayoubensalem/spring-performance:latest"
+                sh "docker run -d -P --rm ayoubensalem/spring-performance:latest"
             }
             post {
                 always {
