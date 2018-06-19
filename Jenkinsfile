@@ -34,7 +34,7 @@ pipeline {
                 sh "docker-compose -f ./docker/dev/docker-compose.yml build agent"
                 sh "docker-compose -f ./docker/dev/docker-compose.yml build db"
                 sh "docker-compose -f ./docker/dev/docker-compose.yml  run --rm agent"
-//            sh "docker-compose -f ./docker/dev/docker-compose.yml exec -T db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
+                // sh "docker-compose -f ./docker/dev/docker-compose.yml exec -T db sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD} springdocker < /opt/dumps/springdocker.sql' "
             }
         }
 
@@ -93,28 +93,26 @@ pipeline {
 
         }
 
-        stage("Coverage Tests") {
+        stage("Sonar Analysis") {
             parallel {
-                stage('Coverage Tests Catalog App') {
+                stage('Sonar - Catalog App') {
                     steps {
                         echo "Coverage"
-                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run catalog'
+                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run catalog'
                     }
 
                 }
-                stage('Coverage Tests Shopfront App') {
+                stage('Sonar - Shopfront App') {
                     steps {
                         echo "Coverage"
-                        
-                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run front'
+                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run front'
                     }
 
                 }
-                stage('Coverage Tests Stockmanager App') {
+                stage('Sonar - Stockmanager App') {
                     steps {
                         echo "Coverage"
-                        
-                        // sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run stock'
+                        sh 'docker-compose -f docker/dev/docker-compose-coverage.yml run stock'
                     }
 
                 }
@@ -127,8 +125,7 @@ pipeline {
 
                     steps {
                         echo "Deploy"
-                        
-                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run catalog'
+                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run catalog'
                     }
 
 
@@ -137,8 +134,7 @@ pipeline {
 
                     steps {
                         echo "Deploy"
-                        
-                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run front'
+                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run front'
                     }
 
 
@@ -147,8 +143,7 @@ pipeline {
 
                     steps {
                         echo "Deploy"
-                        
-                        // sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run stock'
+                        sh 'docker-compose -f docker/dev/docker-compose-deploy.yml run stock'
                     }
 
 
@@ -205,6 +200,7 @@ pipeline {
 
                     steps {
                         echo "Deploy to Nexus Docker registry"
+                        // L'upload est desactivé, car il prend du temps, et les images sont déja uploadés
                         // sh "docker login -u ${docker_registry_id} -p ${docker_registry_password}"
                         // sh "docker push ayoubensalem/springcatalog:latest"
 
@@ -308,7 +304,7 @@ pipeline {
                 // sh "docker rm -f \$(docker ps -aq) >/dev/null 2>&1 || true"
                  echo "Running Performance Image"
                 // sh "docker pull ayoubensalem/spring-performance:latest"
-                // sh "docker run -d -P --rm ayoubensalem/spring-performance:latest"
+                 sh "docker run -d -P --rm ayoubensalem/spring-performance:latest"
             }
             post {
                 always {
