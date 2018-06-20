@@ -17,7 +17,7 @@ pipeline {
                 // sh "docker network create labnet 2> /dev/null"
                 sh "make clean"
                 // sh "ansible-playbook init.yml"
-                sh "docker build --build-arg MAVEN_VERSION=3.5.3 uid=1000 gid=1000 -t ayoubensalem/spring:latest  ./docker/dev/t"
+                sh "docker build --build-arg MAVEN_VERSION=3.5.3 --build-arg uid=1000 --build-arg gid=1000 -t ayoubensalem/spring:latest  ./docker/dev/t"
                 sh "docker login -u ${docker_registry_id} -p ${docker_registry_password}"
                 sh "docker push ayoubensalem/spring:latest"
                 sh "curl -v --user '${nexus_user}:${nexus_password}' --upload-file ./docker/deploy/swarm/stack.yml ${NEXUS_URL}/repository/yamls/stack.yml"
