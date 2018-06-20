@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 class DjShoppingBasicSimulation extends Simulation {
 
   val httpProtocol = http
-    .baseURL("http://10.42.2.180:8010")
+    .baseURL("http://167.99.198.215:8010")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .acceptEncodingHeader("gzip, deflate")
     .acceptLanguageHeader("en-US,en;q=0.5")

@@ -1,4 +1,4 @@
-FROM ayoubensalem/spring:dev
+FROM ayoubensalem/spring
 
 MAINTAINER ayoubensalem
 
@@ -27,7 +27,9 @@ COPY default /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x start.sh
 
-RUN chown -R 1001:125 /app
+RUN chown -R 1000:1000 /app
+
+USER root
 
 ENTRYPOINT ["./start.sh"]
 
