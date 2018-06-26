@@ -264,7 +264,7 @@ under the License.
       </activation>
       <properties>
         <sonar.host.url>
-          http://178.128.173.43:9000
+          http://178.128.32.22:9000
         </sonar.host.url>
       </properties>
     </profile>
